@@ -1,87 +1,104 @@
 class Station
-	attr_reader :trains, :nameStation
+  attr_reader :trains, :name
 
-	def initialize(nameStation)
-		@nameStation = nameStation
-		@trains = []
-	end
+  def initialize(name)
+    @name = name
+    @trains = []
+  end
 
-	def add_train(train)
-		@trains << train
-	end
+  def add_train(train)
+    @trains << train
+  end
 
-	def send_train(train)
-		@trains.delete_if{|elem| elem == train}
-	end
+  def list_passenger
+    @trains.select {|train| train.type == "passenger"}.each {|train| puts train.number}
+  end
+
+  def list_freight
+    @trains.select {|train| train.type == "freight"}.each {|train| puts train.number}
+  end
+
+  def send_train(train)
+    @trains.delete(train)
+  end
 
 end
 
 class Route
-	attr_reader :allStations
-	def initialize(firstStation, lastStation)
-		@allStations = []
-		@allStations[0] = firstStation
-		@allStations[1] = lastStation
-		@array_index = 0	
-	end	
+  attr_reader :stations
+  def initialize(first_station, last_station)
+    @middle_station_index = 0
+    @stations = [first_station, last_station]
+  end 
 
-	def add_station(station)
-		@allStations << station
-		@array_index += 1
-		time_station = @allStations[@array_index]
-		@allStations[@array_index] = @allStations[@array_index + 1]
-		@allStations[@array_index + 1] = time_station
-	end
+  def add_station(station)
+    @middle_station_index += 1
+    @stations.insert(@middle_station_index, station)    
+  end
 
-	def remove_station(station)
-		@allStations.delete_if{|elem| elem == station}
-	end
+  def remove_station(station)
+    (@stations[0] == station or @stations[-1] == station ) ? puts("Error") : @stations.delete(station)
+  end
 
-	def all_stations
-		@allStations.each {|station| puts station.nameStation}
-	end
+  def show_stations
+    @stations.each { |station| puts station.name }
+  end
 end
 
 class Train
-	attr_accessor :speed
-	attr_reader :carriages, :station, :last_station, :next_station, :type
+  attr_reader :carriages, :type, :speed
 
-	def initialize(number, type, carriages)
-		@number = number
-		@type = type #passenger or freight
-		@carriages = carriages
-		@station = ""
-		@speed = 0
-	end
+  def initialize(number, type, carriages)
+    @number = number
+    @type = type #passenger or freight
+    @carriages = carriages
+    @speed = 0
+  end
 
-	def stop 
-		@speed = 0
-	end
+  def increase_speed(value)
+    @speed += value
+  end
+  def decrease_speed(value)
+    @speed <= value ? @speed = 0 : @speed -= value
+  end
 
-	def change_carriages(add)
-		if @speed == 0
-			add == "+" ? @carriages+=1 : @carriages-=1
-		end
-	end
+  def add_carriage
+    @speed == 0 ? @carriages += 1 : puts("Сбросьте скорость до 0")
+  end
+  def remove_carriage
+    @speed == 0 ? @carriages -= 1 : puts("Сбросьте скорость до 0")
+  end
 
-	def add_route(route)
-		@route = route.allStations
-		@i=0
-		@last_station = @route[@i-1].nameStation
-		@next_station = @route[@i+1].nameStation
-		@station = route.allStations[@i].nameStation	
-	end
+  def add_route(route)
+    @route = route
+    @current_station_index = 0
+  end
 
-	def change_station(next_st)
-		if @i == @route.size-1 and next_st == "next"
-			@i = -1
-		elsif @i == 0 and next_st != "next"
-			@i = @route.size
-		end
-		next_st == "next" ? @station = @route[@i+=1].nameStation : 
-		@station = @route[@i-=1].nameStation
-		@last_station = @route[@i-1].nameStation
-		@next_station = @route[@i+1].nameStation
-	end
+  def station
+    @route.stations[@current_station_index]
+  end
+  def next_station
+    @route.stations[@current_station_index+1]
+  end
+  def last_station
+    @route.stations[@current_station_index-1]
+  end
 
+  def drive_forward
+    if @current_station_index == @route.stations.size-1
+      @current_station_index = -1
+      @station = @route.stations[@current_station_index+=1]
+    else
+      @station = @route.stations[@current_station_index+=1]
+    end
+  end
+
+  def drive_back
+    if @current_station_index == 0
+      @current_station_index = @route.stations.size
+      @station = @route.stations[@current_station_index-=1]
+    else
+      @station = @route.stations[@current_station_index-=1]
+    end
+  end
 end
