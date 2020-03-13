@@ -87,7 +87,7 @@ class Train
   end
 
   def previous_station
-    @route.stations[@current_station_index-1]
+    @current_station_index == 0 ? nil : @route.stations[@current_station_index-1]
   end
 
   def drive_forward
