@@ -7,7 +7,7 @@ class Station
   end
 
   def add_train(train)
-    @trains << train if train.station == train.route.stations[0] or nil
+    @trains << train 
   end
 
   def list_by_type(type)
@@ -31,10 +31,16 @@ class Route
     @stations.insert(-2, station)    
   end
 
+  def first_station
+    @stations[0]
+  end
+
+  def last_station
+    @stations[-1]
+  end
+
   def remove_station(station)
-    first_station = @stations[0]
-    last_station = @stations[-1]
-    [first_station, last_station].include?(station) ? nil : @stations.delete(station) 
+    @stations.delete(station) unless [first_station, last_station].include?(station)
   end
 
   def show_stations
@@ -65,17 +71,16 @@ class Train
   end
 
   def add_carriage
-    @speed == 0 ? @carriages += 1 : nil
+    @carriages += 1 if @speed == 0
   end
 
   def remove_carriage
-    @speed == 0 ? @carriages -= 1 : nil
+    @carriages -= 1 if @speed == 0
   end
 
   def add_route(route)
     @route = route
     @current_station_index = 0
-    @route.stations[@current_station_index].add_train(self)
   end
 
   def station
@@ -87,7 +92,7 @@ class Train
   end
 
   def previous_station
-    @current_station_index == 0 ? nil : @route.stations[@current_station_index-1]
+    @route.stations[@current_station_index-1] unless station == route.first_station
   end
 
   def drive_forward
