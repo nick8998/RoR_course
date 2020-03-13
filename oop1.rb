@@ -81,6 +81,7 @@ class Train
   def add_route(route)
     @route = route
     @current_station_index = 0
+    station
   end
 
   def station
@@ -97,17 +98,17 @@ class Train
 
   def drive_forward
     if next_station
-      @route.stations[@current_station_index].send_train(self)
+      station.send_train(self)
       @current_station_index+=1
-      @route.stations[@current_station_index].add_train(self)
+      station.add_train(self)
     end
   end
 
   def drive_back
     if previous_station
-      @route.stations[@current_station_index].send_train(self)
+      station.send_train(self)
       @current_station_index-=1
-      @route.stations[@current_station_index].add_train(self)
+      station.add_train(self)
     end
   end
 end
