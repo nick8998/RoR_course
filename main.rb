@@ -14,83 +14,107 @@ class RailRoad
     @routes = []
     @carriages = []
   end
-	def menu
-		puts "Введите 1, чтобы создать поезд, станцию, маршрут или вагон"
-		puts "Введите 2, чтобы произвести операцию над объектом"
-		puts "Введите 3, чтобы увидеть информацию об объектах"
-		puts "Введите 0, чтобы завершить программу"
-		
-		next_action = gets.chomp.to_i
-		
-		case next_action
-		
-		when 1
-			creating_obj
-		
-		when 2
-			changing_obj
-		
-		when 3
-		  show_info
-		
-		else
-			nil	
-		end
-	end
 
-	def creating_obj
-		puts "Введите 1, чтобы создать станцию"
-		puts "Введите 2, чтобы создать поезд"
-		puts "Введите 3, чтобы создать маршрут"
-		puts "Введите 4, чтобы создать вагон"
-		puts "Введите 0, чтобы вернуться назад"
-		
-		next_action = gets.chomp.to_i
-		
-		case next_action
-		
-		when 1
+  def seed
+    t1 = CargoTrain.new(1)
+    t2 = CargoTrain.new(2)
+    t3 = PassengerTrain.new(3)
+    t4 = PassengerTrain.new(4)
+    t5 = PassengerTrain.new(5)
+
+
+
+    st1 = Station.new("st1")
+    st2 = Station.new("st2")
+    st3 = Station.new("st3")
+    st4 = Station.new("st4")
+    st5 = Station.new("st5")
+
+    r1 = Route.new(st1, st5)
+    r1.add_station(st2)
+    r1.add_station(st3)
+    r1.show_stations
+    t1.add_route(r1)
+    t1.station
+  end
+
+  def menu
+    puts "Введите 1, чтобы создать поезд, станцию, маршрут или вагон"
+    puts "Введите 2, чтобы произвести операцию над объектом"
+    puts "Введите 3, чтобы увидеть информацию об объектах"
+    puts "Введите 0, чтобы завершить программу"
+
+    next_action = gets.chomp.to_i
+
+    case next_action
+
+    when 1
+      creating_obj
+
+    when 2
+      changing_obj
+
+    when 3
+      show_info
+
+    else
+      nil
+    end
+  end
+
+  def creating_obj
+    puts "Введите 1, чтобы создать станцию"
+    puts "Введите 2, чтобы создать поезд"
+    puts "Введите 3, чтобы создать маршрут"
+    puts "Введите 4, чтобы создать вагон"
+    puts "Введите 0, чтобы вернуться назад"
+
+    next_action = gets.chomp.to_i
+
+    case next_action
+
+    when 1
       creating_station
-			creating_obj
-		when 2
-			puts "Введите 1, если поезд пассажирский"
-			puts "Введите 2, если поезд грузовой"
-			puts "Введите 0, чтобы вернуться назад"
+      creating_obj
+    when 2
+      puts "Введите 1, если поезд пассажирский"
+      puts "Введите 2, если поезд грузовой"
+      puts "Введите 0, чтобы вернуться назад"
       add_train
       creating_obj
-			
-		when 3
+
+    when 3
       creating_route
       creating_obj
-      
-		when 4
-			puts "Введите 1, если вагон пассажирский"
-			puts "Введите 2, если вагон грузовой"
-			puts "Введите 0, чтобы вернуться назад"
+
+    when 4
+      puts "Введите 1, если вагон пассажирский"
+      puts "Введите 2, если вагон грузовой"
+      puts "Введите 0, чтобы вернуться назад"
       add_carriage
     else
-    menu
+      menu
     end
-	end
+  end
 
-	def changing_obj
-		puts "Введите 1, чтобы изменить станции в маршруте"
-		puts "Введите 2, чтобы назначить маршрут поезду"
-		puts "Введите 3, чтобы изменить кол-во вагонов в поезде"
-		puts "Введите 4, чтобы поезд поехал"
-		puts "Введите 0, вернуться назад"
+  def changing_obj
+    puts "Введите 1, чтобы изменить станции в маршруте"
+    puts "Введите 2, чтобы назначить маршрут поезду"
+    puts "Введите 3, чтобы изменить кол-во вагонов в поезде"
+    puts "Введите 4, чтобы поезд поехал"
+    puts "Введите 0, вернуться назад"
 
-		next_action = gets.chomp.to_i
-		
-		case next_action
+    next_action = gets.chomp.to_i
 
-		when 1
-			puts "Введите 1, чтобы добавить станцию в маршрут"
-			puts "Введите 2, чтобы удалить станцию из маршрута"
-			puts "Введите 0, чтобы вернуться назад"
+    case next_action
+
+    when 1
+      puts "Введите 1, чтобы добавить станцию в маршрут"
+      puts "Введите 2, чтобы удалить станцию из маршрута"
+      puts "Введите 0, чтобы вернуться назад"
       add_station_to_route
 
-		when 2
+    when 2
       route_for_train
       changing_obj
 
@@ -106,19 +130,19 @@ class RailRoad
       puts "Введите 0, чтобы вернуться назад"
       move_train
 
-		else
-			menu
-		end
-	end
+    else
+      menu
+    end
+  end
 
-	def show_info
-		puts "Введите 1, чтобы вывести список станций в маршруте"
-		puts "Введите 2, чтобы вывести список поездов на станции"
-		puts "Введите 0, чтобы вернуться назад"
+  def show_info
+    puts "Введите 1, чтобы вывести список станций в маршруте"
+    puts "Введите 2, чтобы вывести список поездов на станции"
+    puts "Введите 0, чтобы вернуться назад"
 
-		next_action = gets.chomp.to_i
-		
-		case next_action
+    next_action = gets.chomp.to_i
+
+    case next_action
     when 1
       puts "Введите номер маршрута: "
       route_number = gets.chomp.to_i - 1
@@ -133,7 +157,7 @@ class RailRoad
     else
       menu
     end
-	end
+  end
 
   def creating_station
     puts "Введите название станции: "
@@ -292,28 +316,7 @@ class RailRoad
     end
   end
 
-  def seed
-    t1 = CargoTrain.new(1)
-    t2 = CargoTrain.new(2)
-    t3 = PassengerTrain.new(3)
-    t4 = PassengerTrain.new(4)
-    t5 = PassengerTrain.new(5)
 
 
-
-    st1 = Station.new("st1")
-    st2 = Station.new("st2")
-    st3 = Station.new("st3")
-    st4 = Station.new("st4")
-    st5 = Station.new("st5")
-
-    r1 = Route.new(st1, st5)
-    r1.add_station(st2)
-    r1.add_station(st3)
-    r1.show_stations
-    t1.add_route(r1)
-    t1.station
-
-  end
 end
 
