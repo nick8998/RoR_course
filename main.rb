@@ -62,7 +62,7 @@ class RailRoad
 		when 3
       creating_route
       creating_obj
-    #Исправить данную ситуацию, думай
+      
 		when 4
 			puts "Введите 1, если вагон пассажирский"
 			puts "Введите 2, если вагон грузовой"
