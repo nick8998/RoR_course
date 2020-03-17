@@ -4,4 +4,8 @@ class CargoTrain < Train
     super
     @type = :cargo 
   end
+
+  def add_carriage(carriage)
+  	super if carriage.type == :cargo
+  end
 end

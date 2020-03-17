@@ -13,8 +13,8 @@ class Train
     station.add_train(self)
   end
 
-  def add_carriage(carriages)
-    @carriages = carriages if @speed == 0
+  def add_carriage(carriage)
+    @carriages << carriage if @speed == 0
   end
 
   def remove_carriage

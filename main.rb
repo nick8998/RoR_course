@@ -12,8 +12,7 @@ class RailRoad
     @stations = []
     @trains = []
     @routes = []
-    @carriages_cargo = []
-    @carriages_passenger = []
+    @carriages = []
   end
 	def menu
 		puts "Введите 1, чтобы создать поезд, станцию, маршрут или вагон"
@@ -26,20 +25,20 @@ class RailRoad
 		case next_action
 		
 		when 1
-			menu_one
+			creating_obj
 		
 		when 2
-			menu_two
+			changing_obj
 		
 		when 3
-			menu_three
+		  show_info
 		
 		else
 			nil	
 		end
 	end
 
-	def menu_one
+	def creating_obj
 		puts "Введите 1, чтобы создать станцию"
 		puts "Введите 2, чтобы создать поезд"
 		puts "Введите 3, чтобы создать маршрут"
@@ -51,63 +50,30 @@ class RailRoad
 		case next_action
 		
 		when 1
-			puts "Введите название станции: "
-			name = gets.chomp
-			@stations << Station.new(name)
-			menu_one
+      creating_station
+			creating_obj
 		when 2
 			puts "Введите 1, если поезд пассажирский"
 			puts "Введите 2, если поезд грузовой"
 			puts "Введите 0, чтобы вернуться назад"
-			next_action = gets.chomp.to_i
-			case next_action
-			when 1
-				puts "Введите номер поезда: "
-				number = gets.chomp
-				@trains << PassengerTrain.new(number)
-				menu_one
-			when 2
-				puts "Введите номер поезда: "
-				number = gets.chomp
-				@trains << CargoTrain.new(number)
-				menu_one
-			else
-				menu_one
-			end	
+      add_train
+      creating_obj
 			
 		when 3
-			puts "Введите номер маршрута (начиная с 1): "
-			route_number = gets.chomp.to_i - 1
-			puts "Введите начальную станцию: "
-			first_station_name = gets.chomp
-			puts "Введите конечную станцию: "
-			last_station_name = gets.chomp
-      first_station = @stations.index { |station| station.name == first_station_name }
-      last_station = @stations.index { |station| station.name == last_station_name }
-			@routes[route_number] = Route.new(@stations[first_station], @stations[last_station])
-      menu_one
+      creating_route
+      creating_obj
+    #Исправить данную ситуацию, думай
 		when 4
 			puts "Введите 1, если вагон пассажирский"
 			puts "Введите 2, если вагон грузовой"
 			puts "Введите 0, чтобы вернуться назад"
-
-			next_action = gets.chomp.to_i
-			case next_action
-			when 1
-				@carriages_passenger << CarriagePassenger.new
-        menu_one
-			when 2
-				@carriages_cargo << CarriageCargo.new
-        menu_one
-			else
-				menu_one
-			end			
-		else
-			menu
-		end
+      add_carriage
+    else
+    menu
+    end
 	end
 
-	def menu_two
+	def changing_obj
 		puts "Введите 1, чтобы изменить станции в маршруте"
 		puts "Введите 2, чтобы назначить маршрут поезду"
 		puts "Введите 3, чтобы изменить кол-во вагонов в поезде"
@@ -122,93 +88,30 @@ class RailRoad
 			puts "Введите 1, чтобы добавить станцию в маршрут"
 			puts "Введите 2, чтобы удалить станцию из маршрута"
 			puts "Введите 0, чтобы вернуться назад"
-
-			next_action = gets.chomp.to_i
-		
-			case next_action
-			when 1
-				puts "Введите номер маршрута: "
-        route_number = gets.chomp.to_i-1
-        puts "Введите название станции: "
-        station_name = gets.chomp
-        station_index = @stations.index { |station| station.name == station_name }
-        @routes[route_number].add_station(@stations[station_index])
-        menu_two
-			when 2
-        puts "Введите номер маршрута: "
-        route_number = gets.chomp.to_i-1
-        puts "Введите название станции: "
-        station_name = gets.chomp
-        station_index = @stations.index { |station| station.name == station_name }
-        @routes[route_number].remove_station(@stations[station_index])
-        menu_two
-      else
-				menu_two
-			end
+      add_station_to_route
 
 		when 2
-			puts "Введите номер поезда: "
-			train_number = gets.chomp
-			puts "Введите номер маршрута: "
-      route_number = gets.chomp.to_i-1
-      train_index = @trains.index { |train| train.number == train_number }
-			@trains[train_index].add_route(@routes[route_number])
-      menu_two	
+      route_for_train
+      changing_obj
 
     when 3
       puts "Введите 1, чтобы добавить вагон в поезд"
       puts "Введите 2, чтобы удалить вагон из поезда"
       puts "Введите 0, чтобы вернуться назад"
-
-      next_action = gets.chomp.to_i
-    
-      case next_action
-      when 1 
-        puts "Введите номер поезда: "
-        train_number = gets.chomp
-        train_index = @trains.index { |train| train.number == train_number }
-        @trains[train_index].add_carriage(@carriages_cargo) if @trains[train_index].type == :cargo
-        @trains[train_index].add_carriage(@carriages_passenger) if @trains[train_index].type == :passenger
-        menu_two
-      when 2
-        puts "Введите номер поезда: "
-        train_number = gets.chomp
-        train_index = @trains.index { |train| train.number == train_number }
-        @trains[train_index].remove_carriage
-        menu_two
-      else 
-        menu_two
-      end
+      adding_carriage_to_train
 
     when 4
       puts "Введите 1, чтобы поезд поехал вперед"
       puts "Введите 2, чтобы поезд поехал обратно"
       puts "Введите 0, чтобы вернуться назад"
-      next_action = gets.chomp.to_i
-    
-      case next_action
-      when 1 
-        puts "Введите номер поезда: "
-        train_number = gets.chomp
-        train_number = @trains.index { |train| train.number == train_number }
-        @trains[train_number].drive_forward
-        menu_two
-      when 2
-        puts "Введите номер поезда: "
-        train_number = gets.chomp
-        train_number = @trains.index { |train| train.number == train_number }
-        @trains[train_number].drive_back
-        menu_two
-      else
-        menu_two
-      end
+      move_train
 
 		else
 			menu
 		end
 	end
 
-	def menu_three
+	def show_info
 		puts "Введите 1, чтобы вывести список станций в маршруте"
 		puts "Введите 2, чтобы вывести список поездов на станции"
 		puts "Введите 0, чтобы вернуться назад"
@@ -220,17 +123,174 @@ class RailRoad
       puts "Введите номер маршрута: "
       route_number = gets.chomp.to_i - 1
       @routes[route_number].show_stations
-      menu_three
+      show_info
     when 2
       puts "Введите название станции"
       station_name = gets.chomp
       station_index = @stations.index { |station| station.name == station_name }
       @stations[station_index].show_trains
-      menu_three
+      show_info
     else
       menu
     end
 	end
+
+  def creating_station
+    puts "Введите название станции: "
+    name = gets.chomp
+    @stations << Station.new(name)
+  end
+
+  def creating_passenger_train
+    puts "Введите номер поезда: "
+    number = gets.chomp
+    @trains << PassengerTrain.new(number)
+  end
+
+  def creating_cargo_train
+    puts "Введите номер поезда: "
+    number = gets.chomp
+    @trains << CargoTrain.new(number)
+  end
+
+  def creating_route
+    puts "Введите номер маршрута (начиная с 1): "
+    route_number = gets.chomp.to_i - 1
+    puts "Введите начальную станцию: "
+    first_station_name = gets.chomp
+    puts "Введите конечную станцию: "
+    last_station_name = gets.chomp
+    first_station = @stations.index { |station| station.name == first_station_name }
+    last_station = @stations.index { |station| station.name == last_station_name }
+    @routes[route_number] = Route.new(@stations[first_station], @stations[last_station])
+  end
+
+  def adding_station_to_route
+    puts "Введите номер маршрута: "
+    route_number = gets.chomp.to_i-1
+    puts "Введите название станции: "
+    station_name = gets.chomp
+    station_index = @stations.index { |station| station.name == station_name }
+    @routes[route_number].add_station(@stations[station_index])
+  end
+
+  def removing_station_from_route
+    puts "Введите номер маршрута: "
+    route_number = gets.chomp.to_i-1
+    puts "Введите название станции: "
+    station_name = gets.chomp
+    station_index = @stations.index { |station| station.name == station_name }
+    @routes[route_number].remove_station(@stations[station_index])
+  end
+
+  def route_for_train
+    puts "Введите номер поезда: "
+    train_number = gets.chomp
+    puts "Введите номер маршрута: "
+    route_number = gets.chomp.to_i-1
+    train_index = @trains.index { |train| train.number == train_number }
+    @trains[train_index].add_route(@routes[route_number])
+  end
+
+  def adding_carriage
+    puts "Введите номер поезда: "
+    train_number = gets.chomp
+    puts "Введите номер вагона: "
+    carriage_index = gets.chomp.to_i - 1
+    train_index = @trains.index { |train| train.number == train_number }
+    @trains[train_index].add_carriage(@carriages[carriage_index])
+  end
+
+  def removing_carriage
+    puts "Введите номер поезда: "
+    train_number = gets.chomp
+    train_index = @trains.index { |train| train.number == train_number }
+    @trains[train_index].remove_carriage
+  end
+
+  def driving_forward
+    puts "Введите номер поезда: "
+    train_number = gets.chomp
+    train_number = @trains.index { |train| train.number == train_number }
+    @trains[train_number].drive_forward    
+  end
+
+  def driving_back
+    puts "Введите номер поезда: "
+    train_number = gets.chomp
+    train_number = @trains.index { |train| train.number == train_number }
+    @trains[train_number].drive_back
+  end
+
+  def add_carriage
+    next_action = gets.chomp.to_i
+    case next_action
+    when 1
+      @carriages << CarriagePassenger.new
+      creating_obj
+    when 2
+      @carriages << CarriageCargo.new
+      creating_obj
+    else
+      creating_obj
+    end     
+  end
+
+  def add_train
+    next_action = gets.chomp.to_i
+    case next_action
+    when 1
+      creating_passenger_train
+      creating_obj
+    when 2
+      creating_cargo_train
+      creating_obj
+    else
+      creating_obj
+    end     
+  end
+
+  def add_station_to_route 
+    next_action = gets.chomp.to_i  
+    case next_action
+    when 1
+      adding_station_to_route
+      changing_obj
+    when 2
+      removing_station_from_route
+      changing_obj
+    else
+      changing_obj
+    end
+  end
+
+  def adding_carriage_to_train
+    next_action = gets.chomp.to_i
+    case next_action
+    when 1 
+      adding_carriage
+      changing_obj
+    when 2
+      removing_carriage
+      changing_obj
+    else 
+      changing_obj
+    end
+  end
+
+  def move_train
+    next_action = gets.chomp.to_i
+    case next_action
+    when 1 
+      driving_forward
+      changing_obj
+    when 2
+      deriving_back
+      changing_obj
+    else
+      changing_obj
+    end
+  end
 
   def seed
     t1 = CargoTrain.new(1)
@@ -238,6 +298,7 @@ class RailRoad
     t3 = PassengerTrain.new(3)
     t4 = PassengerTrain.new(4)
     t5 = PassengerTrain.new(5)
+
 
 
     st1 = Station.new("st1")
@@ -252,9 +313,7 @@ class RailRoad
     r1.show_stations
     t1.add_route(r1)
     t1.station
-    st1.show_trains
-    t1.drive_forward
-    st1.show_trains
+
   end
 end
 
