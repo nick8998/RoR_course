@@ -118,6 +118,7 @@ class RailRoad
       @routes[route_number].show_stations
       rescue
       puts "Такого маршрута не существует"
+      retry
       end
       show_info
     when 2
@@ -128,6 +129,7 @@ class RailRoad
       @stations[station_index].show_trains
       rescue
       puts "Такой станции не существует"
+      retry
       end
       show_info            
     else
@@ -168,6 +170,7 @@ class RailRoad
     @routes[route_number] = Route.new(@stations[first_station], @stations[last_station])
     rescue
       puts "Неверные данные"
+      retry
     end
   end
 
@@ -181,6 +184,7 @@ class RailRoad
     @routes[route_number].add_station(@stations[station_index])
     rescue
       puts "Неверные данные"
+      retry
     end
   end
 
@@ -194,6 +198,7 @@ class RailRoad
     @routes[route_number].remove_station(@stations[station_index])
     rescue
       puts "Неверные данные"
+      retry
     end
   end
 
@@ -207,6 +212,7 @@ class RailRoad
     @trains[train_index].add_route(@routes[route_number])
     rescue
       puts "Неверные данные"
+      retry
     end
   end
 
@@ -220,6 +226,7 @@ class RailRoad
     @trains[train_index].add_carriage(@carriages[carriage_index])
     rescue
       puts "Неверные данные"
+      retry
     end
   end
 
@@ -231,6 +238,7 @@ class RailRoad
     @trains[train_index].remove_carriage
     rescue
       puts "Такого поезда не существует"
+      retry
     end
   end
 
@@ -242,6 +250,7 @@ class RailRoad
     @trains[train_number].drive_forward
     rescue
       puts "Такого поезда не существует"
+      retry
     end    
   end
 
@@ -253,6 +262,7 @@ class RailRoad
     @trains[train_number].drive_back
     rescue
       puts "Такого поезда не существует"
+      retry
     end
   end
 
