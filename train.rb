@@ -1,19 +1,18 @@
 class Train
-  include ManufacturingCompany
+  #include ManufacturingCompany
   include InstanceCounter
   class << self 
     def find(number)
-      @@trains.select { |a| a.number == number}
+      @@trains[number]
     end
   end
-  @instances = 0
   attr_reader :route, :number, :type
-  @@trains = []
+  @@trains = {}
   def initialize(number)
     @number = number
     @speed = 0
     @carriages = []
-    @@trains << self
+    @@trains[number] = self
     self.register_instance
   end
 

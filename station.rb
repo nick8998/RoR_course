@@ -5,7 +5,6 @@ class Station
       @@stations
     end
   end
-  @instances = 0
   @@stations = []
   attr_reader :name, :trains
 
