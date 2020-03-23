@@ -1,11 +1,21 @@
 class Train
+  #include ManufacturingCompany
+  include InstanceCounter
+  class << self 
+    def find(number)
+      @@trains[number]
+    end
+  end
   attr_reader :route, :number, :type
-
+  @@trains = {}
   def initialize(number)
     @number = number
     @speed = 0
     @carriages = []
+    @@trains[number] = self
+    self.register_instance
   end
+
 
   def add_route(route)
     @route = route
@@ -56,6 +66,8 @@ class Train
   def speed
     @speed
   end  
+
+
 
   private
   #Используем их только внутри класса, для проверки условия пути 
