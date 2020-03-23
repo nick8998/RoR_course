@@ -1,5 +1,5 @@
 class Train
-  include ManufacturingCompany
+  #include ManufacturingCompany
   include InstanceCounter
   class << self 
     def find(number)
