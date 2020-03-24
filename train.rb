@@ -1,21 +1,34 @@
 class Train
   include ManufacturingCompany
   include InstanceCounter
+
   class << self 
     def find(number)
       @@trains[number]
     end
   end
+
   attr_reader :route, :number, :type
+
+  NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
+
   @@trains = {}
-  def initialize(number)
+
+  def initialize(number)  
     @number = number
     @speed = 0
     @carriages = []
+    validate!
     @@trains[number] = self
     self.register_instance
   end
 
+  def valid?
+    validate!
+    true 
+  rescue
+    false
+  end
 
   def add_route(route)
     @route = route
@@ -67,7 +80,12 @@ class Train
     @speed
   end  
 
+  protected
 
+  def validate!
+    raise "Please, enter the train number" if number.nil?
+    raise "Number has invalid format" if number !~ NUMBER_FORMAT
+  end
 
   private
   #Используем их только внутри класса, для проверки условия пути 

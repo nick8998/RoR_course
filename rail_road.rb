@@ -147,12 +147,14 @@ class RailRoad
     puts "Введите номер поезда: "
     number = gets.chomp
     @trains << PassengerTrain.new(number)
+    puts "Создан пассажирский поезд с номером: #{number}"
   end
 
   def creating_cargo_train
     puts "Введите номер поезда: "
     number = gets.chomp
     @trains << CargoTrain.new(number)
+    puts "Создан грузовой поезд с номером: #{number}"
   end
 
   def creating_route

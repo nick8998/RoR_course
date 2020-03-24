@@ -4,7 +4,15 @@ class Route
   def initialize(first_station, last_station)
     @stations = [first_station, last_station]
     self.register_instance
+    validate!
   end 
+
+  def valid?
+    validate!
+    true 
+  rescue
+    false
+  end
 
   def add_station(station)
     @stations.insert(-2, station)    
@@ -26,4 +34,11 @@ class Route
     @stations[-1]
   end
 
+  protected
+
+  def validate!
+    raise "Enter the first station" if first_station.nil?
+    raise "Enter the last station" if last_station.nil?
+    raise "Enter the first and last stations" if first_station.nil? and last_station.nil?
+  end
 end

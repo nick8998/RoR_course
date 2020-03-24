@@ -13,6 +13,14 @@ class Station
     @trains = []
     @@stations << self
     self.register_instance
+    validate!
+  end
+
+  def valid?
+    validate!
+    true 
+  rescue
+    false
   end
 
   def list_by_type(type)
@@ -30,6 +38,13 @@ class Station
 
   def send_train(train)
     @trains.delete(train)
+  end
+
+  protected
+
+  def validate!
+    raise "Please, enter the station name" if name.nil?
+    raise "Name must have more than 4 characters" if name.length <= 4 
   end
 
 end
