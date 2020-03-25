@@ -1,5 +1,7 @@
 class Station
   include InstanceCounter
+  include Valid
+
   class << self
     def all
       @@stations
@@ -11,16 +13,9 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
+    validate!
     @@stations << self
     self.register_instance
-    validate!
-  end
-
-  def valid?
-    validate!
-    true 
-  rescue
-    false
   end
 
   def list_by_type(type)

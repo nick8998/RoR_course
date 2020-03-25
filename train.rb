@@ -1,6 +1,7 @@
 class Train
   include ManufacturingCompany
   include InstanceCounter
+  include Valid
 
   class << self 
     def find(number)
@@ -21,13 +22,6 @@ class Train
     validate!
     @@trains[number] = self
     self.register_instance
-  end
-
-  def valid?
-    validate!
-    true 
-  rescue
-    false
   end
 
   def add_route(route)

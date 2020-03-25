@@ -144,17 +144,31 @@ class RailRoad
   end
 
   def creating_passenger_train
-    puts "Введите номер поезда: "
-    number = gets.chomp
-    @trains << PassengerTrain.new(number)
-    puts "Создан пассажирский поезд с номером: #{number}"
+    attempt = 0
+    begin
+      puts "Введите номер поезда: "
+      number = gets.chomp
+      @trains << PassengerTrain.new(number)
+      puts "Создан пассажирский поезд с номером: #{number}"
+    rescue RuntimeError => e
+      puts "Номер не соответствует формату"
+      attempt += 1
+      retry if attempt < 3
+    end
   end
 
   def creating_cargo_train
-    puts "Введите номер поезда: "
-    number = gets.chomp
-    @trains << CargoTrain.new(number)
-    puts "Создан грузовой поезд с номером: #{number}"
+      attempt = 0
+    begin
+      puts "Введите номер поезда: "
+      number = gets.chomp
+      @trains << CargoTrain.new(number)
+      puts "Создан грузовой поезд с номером: #{number}"
+    rescue RuntimeError => e
+      puts "Номер не соответствует формату"
+      attempt += 1
+      retry if attempt < 3
+    end
   end
 
   def creating_route
