@@ -1,5 +1,7 @@
 class Station
   include InstanceCounter
+  include Valid
+
   class << self
     def all
       @@stations
@@ -11,6 +13,7 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
+    validate!
     @@stations << self
     self.register_instance
   end
@@ -30,6 +33,13 @@ class Station
 
   def send_train(train)
     @trains.delete(train)
+  end
+
+  protected
+
+  def validate!
+    raise "Please, enter the station name" if name.nil?
+    raise "Name must have more than 4 characters" if name.length <= 4 
   end
 
 end
