@@ -7,6 +7,7 @@ class Station
       @@stations
     end
   end
+
   @@stations = []
   attr_reader :name, :trains
 
@@ -33,6 +34,14 @@ class Station
 
   def send_train(train)
     @trains.delete(train)
+  end
+
+  def check_trains(&block)
+    i = 0
+    while i < @trains.size
+      block.call(@trains[i])
+      i+=1
+    end
   end
 
   protected

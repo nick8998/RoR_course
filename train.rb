@@ -9,7 +9,7 @@ class Train
     end
   end
 
-  attr_reader :route, :number, :type
+  attr_reader :route, :number, :type, :carriages
 
   NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
 
@@ -73,6 +73,14 @@ class Train
   def speed
     @speed
   end  
+
+  def check_carriages(&block)
+    i = 0
+    while i < @carriages.size
+      block.call(@carriages[i])
+      i+=1
+    end
+  end
 
   protected
 
