@@ -1,23 +1,13 @@
 class CarriageCargo < Carriage
 
-  def initialize(volume)
-    @volume = volume
-    @holden_volume = 0
+  def initialize(place)
+    super
     @type = :cargo
   end
 
   def take_volume(volume)
-    if volume <= @volume
-      @volume -= volume and @holden_volume += volume
-    end
-    
+    @holden_place += volume if @place != holden_place
+    @free_place -= volume if @free_place != 0
   end
-
-  def volume
-    @holden_volume
-  end
-
-  def free_volume
-    @volume
-  end
+  
 end

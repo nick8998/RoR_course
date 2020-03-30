@@ -386,21 +386,21 @@ class RailRoad
 
   def show_carriages
     attempt = 0
-      carriage_number = 0
-      begin
-      puts "Введите номер поезда: "
-      train_number = gets.chomp
-      train = Train.find(train_number)
-        if train.type == :cargo
-            train.check_carriages { |carriage| puts "#{carriage_number+=1} Cargo #{carriage.free_volume} #{carriage.volume}"}
-        elsif train.type == :passenger
-            train.check_carriages { |carriage| puts "#{carriage_number+=1} Passenger #{carriage.free_seats} #{carriage.holden_seats}"}
-        end 
-      rescue
-        puts "Такого поезда не существует"
-        attempt += 1
-        retry if attempt < 3
-      end
+    carriage_number = 0
+    begin
+    puts "Введите номер поезда: "
+    train_number = gets.chomp
+    train = Train.find(train_number)
+      if train.type == :cargo
+          train.check_carriages { |carriage| puts "#{carriage_number+=1} Cargo #{carriage.free_volume} #{carriage.volume}"}
+      elsif train.type == :passenger
+          train.check_carriages { |carriage| puts "#{carriage_number+=1} Passenger #{carriage.free_seats} #{carriage.holden_seats}"}
+      end 
+    rescue
+      puts "Такого поезда не существует"
+      attempt += 1
+      retry if attempt < 3
+    end
   end
 
   def show_stations_route
@@ -430,7 +430,7 @@ class RailRoad
     end
   end
 
-  private  
+ private
 
   def seed
     t1 = CargoTrain.new("eee-ee")
@@ -450,10 +450,12 @@ class RailRoad
     r1 = Route.new(st1, st5)
     r1.add_station(st2)
     r1.add_station(st3)
-    r1.show_stations
     t1.add_route(r1)
-    t1.station
+    t2.add_route(r1)
+    t3.add_route(r1)
     st1.show_trains
-    st1.check_trains {|train| puts train.number}
+
+    st1.check_trains {|train|  train.number}
+
   end
 end

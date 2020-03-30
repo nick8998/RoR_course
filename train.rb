@@ -75,11 +75,7 @@ class Train
   end  
 
   def check_carriages(&block)
-    i = 0
-    while i < @carriages.size
-      block.call(@carriages[i])
-      i+=1
-    end
+      @carriages.each { |carriage| yield carriage }
   end
 
   protected
