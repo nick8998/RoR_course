@@ -25,7 +25,7 @@ class RailRoad
     when 3
       show_info
 
-    else
+    when 0
       nil
     end
   end
@@ -70,6 +70,7 @@ class RailRoad
     puts "Введите 2, чтобы назначить маршрут поезду"
     puts "Введите 3, чтобы изменить кол-во вагонов в поезде"
     puts "Введите 4, чтобы поезд поехал"
+    puts "Введите 5, чтобы занять объем или места в вагоне"
     puts "Введите 0, вернуться назад"
 
     next_action = gets.chomp.to_i
@@ -98,6 +99,9 @@ class RailRoad
       puts "Введите 0, чтобы вернуться назад"
       move_train
 
+    when 5
+      add_to_carriages
+      changing_obj
     else
       menu
     end
@@ -106,41 +110,48 @@ class RailRoad
   def show_info
     puts "Введите 1, чтобы вывести список станций в маршруте"
     puts "Введите 2, чтобы вывести список поездов на станции"
+    puts "Введите 3, чтобы вывести список вагонов у поезда"
     puts "Введите 0, чтобы вернуться назад"
 
     next_action = gets.chomp.to_i
 
     case next_action
     when 1
+      attempt = 0
       begin
       puts "Введите номер маршрута: "
       route_number = gets.chomp.to_i - 1
       @routes[route_number].show_stations
       rescue
       puts "Такого маршрута не существует"
-      retry
+      attempt += 1
+      retry if attempt < 3
       end
       show_info
     when 2
-      begin
-      puts "Введите название станции"
-      station_name = gets.chomp
-      station_index = @stations.index { |station| station.name == station_name }
-      @stations[station_index].show_trains
-      rescue
-      puts "Такой станции не существует"
-      retry
-      end
-      show_info            
+      show_stations_route
+      show_info
+    when 3
+      show_carriages
+      show_info
     else
       menu
     end
   end
 
+
+
   def creating_station
-    puts "Введите название станции: "
-    name = gets.chomp
-    @stations << Station.new(name)
+    attempt = 0
+    begin
+      puts "Введите название станции: "
+      name = gets.chomp
+      @stations << Station.new(name)
+    rescue
+      puts "Название не соответствует формату"
+      attempt += 1
+      retry if attempt < 3
+    end
   end
 
   def creating_passenger_train
@@ -174,6 +185,7 @@ class RailRoad
   def creating_route
     puts "Список существующих станций: "
     @stations.each { |station| puts station.name }
+    attempt = 0
     begin
     puts "Введите номер маршрута (начиная с 1): "
     route_number = gets.chomp.to_i - 1
@@ -186,11 +198,13 @@ class RailRoad
     @routes[route_number] = Route.new(@stations[first_station], @stations[last_station])
     rescue
       puts "Неверные данные"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end
   end
 
   def adding_station_to_route
+    attempt = 0
     begin
     puts "Введите номер маршрута: "
     route_number = gets.chomp.to_i-1
@@ -200,11 +214,13 @@ class RailRoad
     @routes[route_number].add_station(@stations[station_index])
     rescue
       puts "Неверные данные"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end
   end
 
   def removing_station_from_route
+    attempt = 0
     begin
     puts "Введите номер маршрута: "
     route_number = gets.chomp.to_i-1
@@ -214,11 +230,13 @@ class RailRoad
     @routes[route_number].remove_station(@stations[station_index])
     rescue
       puts "Неверные данные"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end
   end
 
   def route_for_train
+    attempt = 0
     begin
     puts "Введите номер поезда: "
     train_number = gets.chomp
@@ -228,11 +246,13 @@ class RailRoad
     @trains[train_index].add_route(@routes[route_number])
     rescue
       puts "Неверные данные"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end
   end
 
   def adding_carriage
+    attempt = 0
     begin
     puts "Введите номер поезда: "
     train_number = gets.chomp
@@ -242,11 +262,13 @@ class RailRoad
     @trains[train_index].add_carriage(@carriages[carriage_index])
     rescue
       puts "Неверные данные"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end
   end
 
   def removing_carriage
+    attempt = 0
     begin
     puts "Введите номер поезда: "
     train_number = gets.chomp
@@ -254,11 +276,13 @@ class RailRoad
     @trains[train_index].remove_carriage
     rescue
       puts "Такого поезда не существует"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end
   end
 
   def driving_forward
+    attempt = 0
     begin
     puts "Введите номер поезда: "
     train_number = gets.chomp
@@ -266,11 +290,13 @@ class RailRoad
     @trains[train_number].drive_forward
     rescue
       puts "Такого поезда не существует"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end    
   end
 
   def driving_back
+    attempt = 0
     begin
     puts "Введите номер поезда: "
     train_number = gets.chomp
@@ -278,7 +304,8 @@ class RailRoad
     @trains[train_number].drive_back
     rescue
       puts "Такого поезда не существует"
-      retry
+      attempt += 1
+      retry if attempt < 3
     end
   end
 
@@ -286,10 +313,14 @@ class RailRoad
     next_action = gets.chomp.to_i
     case next_action
     when 1
-      @carriages << CarriagePassenger.new
+      puts "Введите кол-во мест"
+      seats = gets.chomp.to_i
+      @carriages << CarriagePassenger.new(seats)
       creating_obj
     when 2
-      @carriages << CarriageCargo.new
+      puts "Введите объем для вагона"
+      volume = gets.chomp.to_i
+      @carriages << CarriageCargo.new(volume)
       creating_obj
     else
       creating_obj
@@ -352,28 +383,89 @@ class RailRoad
     end
   end
 
-  private
+
+  def show_carriages
+    attempt = 0
+    carriage_number = 0
+    begin
+    puts "Введите номер поезда: "
+    train_number = gets.chomp
+    train = Train.find(train_number)
+      if train.type == :cargo
+          train.check_carriages { |carriage| puts "#{carriage_number+=1} Cargo #{carriage.free_place} #{carriage.holden_place}"}
+      elsif train.type == :passenger
+          train.check_carriages { |carriage| puts "#{carriage_number+=1} Passenger #{carriage.free_place} #{carriage.holden_place}"}
+      end 
+    rescue
+      puts "Такого поезда не существует"
+      attempt += 1
+      retry if attempt < 3
+    end
+  end
+
+  def show_stations_route
+    attempt = 0
+    begin
+      puts "Введите название станции"
+      station_name = gets.chomp
+      station_index = @stations.index { |station| station.name == station_name }
+      station = @stations[station_index]
+      station.check_trains { |train| puts "#{train.number} #{train.type} #{train.carriages.size}"}
+    rescue
+      puts "Такой станции не существует"
+      attempt += 1
+      retry if attempt < 3
+    end
+  end
+
+  def add_to_carriages
+    puts "Введите номер вагона: "
+    carriage_index = gets.chomp.to_i-1
+    if @carriages[carriage_index].type == :cargo
+      puts "Введите кол-во занимаемого объема: "
+      place = gets.chomp.to_i
+      @carriages[carriage_index].take_place(place)
+    elsif @carriages[carriage_index].type == :passenger
+      @carriages[carriage_index].take_place(1)
+    end
+  end
+
+
 
   def seed
-    t1 = CargoTrain.new(1)
-    t2 = CargoTrain.new(2)
-    t3 = PassengerTrain.new(3)
-    t4 = PassengerTrain.new(4)
-    t5 = PassengerTrain.new(5)
+    t1 = CargoTrain.new("eee-ee")
+    t2 = CargoTrain.new("rrr-rr")
+    t3 = PassengerTrain.new("eeeee")
+    t4 = PassengerTrain.new("rrrrr")
+    t5 = PassengerTrain.new("ttttt")
 
 
 
-    st1 = Station.new("st1")
-    st2 = Station.new("st2")
-    st3 = Station.new("st3")
-    st4 = Station.new("st4")
-    st5 = Station.new("st5")
+    st1 = Station.new("palm1")
+    st2 = Station.new("palm2")
+    st3 = Station.new("palm3")
+    st4 = Station.new("palm4")
+    st5 = Station.new("palm5")
 
     r1 = Route.new(st1, st5)
     r1.add_station(st2)
     r1.add_station(st3)
-    r1.show_stations
     t1.add_route(r1)
-    t1.station
+    t2.add_route(r1)
+    t3.add_route(r1)
+
+    v1 = CarriageCargo.new(123)
+    v2 = CarriagePassenger.new(234)
+    p v2.take_place(46)
+    p v2.holden_place
+    p v2.free_place
+    t1.add_carriage(v1)
+    t3.add_carriage(v2)
+    p v1.holden_place
+    p v1.free_place
+    st1.show_trains
+
+    st1.check_trains {|train|  train.number}
+
   end
 end
