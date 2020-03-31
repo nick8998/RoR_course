@@ -5,9 +5,8 @@ class CarriageCargo < Carriage
     @type = :cargo
   end
 
-  def take_volume(volume)
-    @holden_place += volume if @place != holden_place
-    @free_place -= volume if @free_place != 0
+  def take_place(place)
+    super
   end
   
 end

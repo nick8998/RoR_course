@@ -392,9 +392,9 @@ class RailRoad
     train_number = gets.chomp
     train = Train.find(train_number)
       if train.type == :cargo
-          train.check_carriages { |carriage| puts "#{carriage_number+=1} Cargo #{carriage.free_volume} #{carriage.volume}"}
+          train.check_carriages { |carriage| puts "#{carriage_number+=1} Cargo #{carriage.free_place} #{carriage.holden_place}"}
       elsif train.type == :passenger
-          train.check_carriages { |carriage| puts "#{carriage_number+=1} Passenger #{carriage.free_seats} #{carriage.holden_seats}"}
+          train.check_carriages { |carriage| puts "#{carriage_number+=1} Passenger #{carriage.free_place} #{carriage.holden_place}"}
       end 
     rescue
       puts "Такого поезда не существует"
@@ -423,14 +423,14 @@ class RailRoad
     carriage_index = gets.chomp.to_i-1
     if @carriages[carriage_index].type == :cargo
       puts "Введите кол-во занимаемого объема: "
-      volume = gets.chomp.to_i
-      @carriages[carriage_index].take_volume(volume)
+      place = gets.chomp.to_i
+      @carriages[carriage_index].take_place(place)
     elsif @carriages[carriage_index].type == :passenger
-      @carriages[carriage_index].take_seats
+      @carriages[carriage_index].take_place(1)
     end
   end
 
- private
+private
 
   def seed
     t1 = CargoTrain.new("eee-ee")
@@ -453,6 +453,14 @@ class RailRoad
     t1.add_route(r1)
     t2.add_route(r1)
     t3.add_route(r1)
+
+    v1 = CarriageCargo.new(123)
+    v2 = CarriagePassenger.new(234)
+
+    t1.add_carriage(v1)
+    t3.add_carriage(v2)
+    p v1.holden_place
+    p v1.free_place
     st1.show_trains
 
     st1.check_trains {|train|  train.number}

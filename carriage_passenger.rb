@@ -5,9 +5,8 @@ class CarriagePassenger < Carriage
     @type = :passenger
   end
 
-  def take_seats
-    @holden_place += 1 if @place != holden_place
-    @free_place -= 1 if @free_place != 0
+  def take_place(place)
+    super
   end
 
 end
