@@ -430,7 +430,7 @@ class RailRoad
     end
   end
 
-private
+
 
   def seed
     t1 = CargoTrain.new("eee-ee")
@@ -456,7 +456,9 @@ private
 
     v1 = CarriageCargo.new(123)
     v2 = CarriagePassenger.new(234)
-
+    p v2.take_place(46)
+    p v2.holden_place
+    p v2.free_place
     t1.add_carriage(v1)
     t3.add_carriage(v2)
     p v1.holden_place

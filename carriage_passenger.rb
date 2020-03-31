@@ -5,8 +5,8 @@ class CarriagePassenger < Carriage
     @type = :passenger
   end
 
-  def take_place(place)
-    super
+  def take_place(_place)
+    super(1)
   end
 
 end
