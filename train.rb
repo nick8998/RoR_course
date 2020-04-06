@@ -1,7 +1,8 @@
 class Train
   include ManufacturingCompany
   include InstanceCounter
-  include Valid
+  include Validation
+  include Accessors
 
   class << self 
     def find(number)
@@ -9,9 +10,12 @@ class Train
     end
   end
 
-  attr_reader :route, :number, :type, :carriages
-
   NUMBER_FORMAT = /^([a-z]|\d){3}-?([a-z]|\d){2}$/i
+
+  attr_reader :route, :number, :type, :carriages
+  attr_accessor_with_history :speed
+
+  validate :number, :format, NUMBER_FORMAT
 
   @@trains = {}
 
@@ -70,20 +74,15 @@ class Train
     @speed <= value ? @speed = 0 : @speed -= value
   end
 
-  def speed
-    @speed
-  end  
+  #def speed
+   # @speed
+  #end  
 
   def check_carriages(&block)
       @carriages.each { |carriage| yield carriage }
   end
 
   protected
-
-  def validate!
-    raise "Please, enter the train number" if number.nil?
-    raise "Number has invalid format" if number !~ NUMBER_FORMAT
-  end
 
   private
   #Используем их только внутри класса, для проверки условия пути 
