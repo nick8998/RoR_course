@@ -1,7 +1,8 @@
 class Carriage
 
   include ManufacturingCompany
-
+  
+  
   def initialize(place)
     @place = place
     @holden_place = 0

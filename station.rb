@@ -1,6 +1,6 @@
 class Station
   include InstanceCounter
-  include Valid
+  include Validation
 
   class << self
     def all
@@ -9,7 +9,11 @@ class Station
   end
 
   @@stations = []
+
   attr_reader :name, :trains
+
+  validate :name, :presence
+
 
   def initialize(name)
     @name = name
@@ -38,13 +42,6 @@ class Station
 
   def check_trains
     @trains.each { |train| yield train }
-  end
-
-  protected
-
-  def validate!
-    raise "Please, enter the station name" if name.nil?
-    raise "Name must have more than 4 characters" if name.length <= 4 
   end
 
 end
