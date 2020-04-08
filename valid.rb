@@ -6,29 +6,31 @@ module Validation
   end
 
   module ClassMethods
-    @@instances_variable = 0
     def validate(name, type, extra = nil)
-      valid = self.class_variable_get(:@@valid_values)
-      name =  "@#{name}".to_sym
-      type = "@#{type}".to_sym
-      valid[@@instances_variable] = [name, type, extra] unless extra.nil?
-      valid[@@instances_variable] = [name, type] if extra.nil?
-      @@instances_variable += 1
-      define_method("validate_@presence".to_sym) { raise "Enter name" if @valid_name.nil? or @valid_name == "" }
-      define_method("validate_@format".to_sym) { raise "Invalid format" if @valid_name !~ @valid_extra }
-      define_method("validate_@type".to_sym) { raise "Invalid type" if @valid_name.class != @valid_extra } 
+      @valid_checks ||= []
+      @valid_checks << { type: type, name: "@#{name}".to_sym, extra: extra} 
     end
   end
 
   module InstanceMethods
     def validate!
-      valid = self.class.class_variable_get(:@@valid_values)
-      valid.each do |key, value|
-        @valid_name = self.instance_variable_get(value[0])
-        @valid_type = value[1]
-        @valid_extra = value[2]
-        send("validate_#{@valid_type}")
+      valid_checks = self.class.instance_variable_get(:@valid_checks)
+      valid_checks.each do |check|
+        value = self.class.instance_variable_get(check[:name])
+        send("validate_#{check[:type]}", value, check[:extra])
       end
+    end
+
+    def validate_presence(name, extra)
+      raise "Enter name" if name.nil? or name == ""
+    end
+
+    def validate_format(name, extra)
+      raise "Invalid format" if name !~ extra
+    end
+
+    def validate_type(name, extra)
+      raise "Invalid type" if name.class != extra
     end
 
     def valid?
@@ -42,4 +44,4 @@ module Validation
 end
 
 
- 
+

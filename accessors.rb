@@ -3,14 +3,15 @@ module Accessors
   def attr_accessor_with_history(*names)
     names.each do |name|
       var_name = "@#{name}".to_sym
-      names_history = "@#{name}_history".to_sym
-      names_history = []
+      name_history = "@#{name}_history".to_sym
+      values = []
       define_method(name) { instance_variable_get(var_name) }
       define_method("#{name}=".to_sym) do |value|
-        names_history << value
+        values << value
         instance_variable_set(var_name, value)
+        instance_variable_set(name_history, values)
       end
-      define_method("#{name}_history".to_sym) { names_history }
+      define_method("#{name}_history".to_sym) { instance_variable_get(name_history) }
     end
   end
   
@@ -27,8 +28,4 @@ module Accessors
   end
 end
 
-class Check
-  extend Accessors
-  attr_accessor_with_history :a
-end
 
